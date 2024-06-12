@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot App</title>
+    {% load extras %}
+    <!-- Load static files if needed -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa; /* Background color */
+            padding-top: 10px;
+            margin:auto;
+            margin-top: -10px;
+        }
+        
+        h1 {
+            text-align: center;
+            color:#fff; 
+            margin-bottom: 0px;
+        
+        }
+        #chatbot-container {
+            margin: 0 auto;
+            width: 80%;
+            margin-top: 30px;
+        }
+        #chatbot {
+            border-radius: 10px;
+            border: 1px solid grey;
+            padding: 10px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+            text-align: left;
+            line-height: 25px;
+            color: #6d6f6d; /* Text color */
+        }
+        .message-container {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        .user-message {
+            margin-left: auto;
+            background-color: #4CAF50;
+            color: #fff;
+            border-radius: 10px;
+            padding: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .bot-message {
+            background-color: burlywood;
+            color: #333;
+            border-radius: 10px;
+            padding: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        #userInput {
+            text-align: center;
+            padding: 10px;
+        }
+        #textInput {
+            padding: 10px;
+            width: 50%;
+            border-radius: 20px;
+            border: 1px solid #ccc; /* Input border color */
+            
+        }
+
+        #sendButton {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            background-color: #4CAF50; /* Button background color */
+            color: #fff; /* Button text color */
+            cursor: pointer;
+        }
+        #sendButton:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        nav li {
+            float: left;
+            font-weight: bold;
+        }
+        nav li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav li a:hover {
+            background-color: #4CAF50;
+            color: #333;
+        }
+        .signout {
+            float: right;
+        }
+
+        .header{
+            float: center;
+        }
+
+        .feedback{
+            background-color: #4CAF50;
+            font-style: normal;
+            font-weight: bolder;
+            color: #fff; 
+
+        }
+
+        #scrollBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        #feedbutton{
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            background-color: #4CAF50; /* Button background color */
+            color: #fff; /* Button text color */
+            cursor: pointer;
+        }
+        #feedbutton:hover{
+            background-color: #45a049; /* Darker green on hover */
+        }
+        
+    </style>
+       
+</head>
+<body>
+    <nav>
+        <ul>
+            <h1 class="header">UKULIMA CHATBOT</h1>
+            <li><a href="{%url 'index'%}">Home</a></li>
+            <li><a href="{%url 'help'%}">Help</a></li>
+            <li><a href="{%url 'uploadimage'%}">UploadImage</a></li>
+            <li class="signout"><a href="{%url 'login'%}">Sign Out</a></li>
+           
+        </ul>
+
+    </nav>    
+
+    <div id="chatbot-container">
+        {% if messages %}
+            <div id="chatbot">
+                {% for message in messages %}
+                    <div class="message-container">
+                        <div class="user-message">{{ message.prompt }}</div>
+                    </div>
+                    <div class="message-container">
+                        <div class="bot-message"><span>UKULIMA:
+                            {{ message.response|convert_markdown|safe }}</span></div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <button id="scrollBtn" onclick="scrollToBottom()">&#8595;</button>
+        <div style="text-align: center; padding: 2rem; " id="userInput">
+            <form method="post" action="{% url 'chat_view' %}">
+                {% csrf_token %}
+                <input type="text" id="textInput" name="user_input" placeholder="Type your message/Andika ujumbe wako...">
+
+                <input type="submit" value="Send/Tuma" id="sendButton">
+            </form>
+            <p style="text-align: center;"><a href="{% url 'feedback' %}" ><button id="feedbutton" class="feedback">To Give Feedback, click here</button></a>
+            </p>
+    
+        </div>
+    </div>
+    <script>
+        function scrollToBottom() {
+            var chatbot = document.getElementById('chatbot');
+            chatbot.scrollTop = chatbot.scrollHeight;
+        }
+    </script>
+</body>
+</html>
